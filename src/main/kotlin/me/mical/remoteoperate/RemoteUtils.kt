@@ -38,12 +38,13 @@ val residenceEnabled = plugin.server.pluginManager.getPlugin("Residence") != nul
 val itemsAdderEnabled = plugin.server.pluginManager.getPlugin("ItemsAdder") != null
 
 fun Location.checkResidence(user: Player, flags: Flags): Boolean {
+    if (!residenceEnabled) return true
     val residence = ResidenceApi.getResidenceManager().getByLoc(this)
-    return residenceEnabled && (residence.ownerUUID == user.uniqueId || residence.permissions.playerHas(
+    return if (residence == null) true else (residence.ownerUUID == user.uniqueId || residence.permissions.playerHas(
         user, flags, FlagPermissions.FlagCombo.OnlyTrue
     ) || residence.permissions.playerHas(user, Flags.admin, FlagPermissions.FlagCombo.OnlyTrue))
 }
 
 fun Block.checkLocker(user: Player): Boolean {
-    return blockLockerEnabled && BlockLockerAPIv2.isAllowed(user, this, false)
+    return if (!blockLockerEnabled) true else BlockLockerAPIv2.isAllowed(user, this, false)
 }
